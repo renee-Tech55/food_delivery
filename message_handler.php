@@ -1,11 +1,24 @@
 <?php
 include 'includes/db_connection.php'; // adjust path if needed
 
+function sanitizeInput($data,$type) {
+    switch ($type) {
+        case 'email':
+            $data = filter_var($data, FILTER_SANITIZE_EMAIL);
+            break;
+        case 'string':
+            $data = filter_var($data, FILTER_SANITIZE_STRING);
+            break;
+        default:
+            $data = htmlspecialchars(stripslashes(trim($data)));
+    }
+    return $data;
+}
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name    = mysqli_real_escape_string($conn, $_POST['name']);
-    $phone   = mysqli_real_escape_string($conn, $_POST['phone']);
-    $email   = mysqli_real_escape_string($conn, $_POST['email']);
-    $content = mysqli_real_escape_string($conn, $_POST['content']);
+    $name    = sanitizeInput($_POST['name'], 'string');
+    $phone   = sanitizeInput($_POST['phone'], 'string');
+    $email   = sanitizeInput($_POST['email'], 'email');
+    $content = sanitizeInput($_POST['content'], 'string');
 
     $stmt = mysqli_prepare($conn, "INSERT INTO messages (name, phone, email, content) VALUES (?, ?, ?, ?)");
     mysqli_stmt_bind_param($stmt, "ssss", $name, $phone, $email, $content);

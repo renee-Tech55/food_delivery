@@ -25,10 +25,25 @@ if ($staff_result && $staff_result->num_rows > 0) {
     $staffInfo = $staff_result->fetch_assoc();
 }
 
+function sanitizeInput($data,$type) {
+    switch ($type) {
+        case 'email':
+            $data = filter_var($data, FILTER_SANITIZE_EMAIL);
+            break;
+        case 'string':
+            $data = filter_var($data, FILTER_SANITIZE_STRING);
+            break;
+        default:
+            $data = htmlspecialchars(stripslashes(trim($data)));
+     break;
+    }
+    return $data;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = $_POST['name'];
-    $desc = $_POST['description'];
-    $price = $_POST['price'];
+    $name = sanitizeInput($_POST['name'], 'string');
+    $desc = sanitizeInput($_POST['description'], 'string');
+    $price = sanitizeInput($_POST['price'], 'string') ;
     $available = isset($_POST['available']) ? 1 : 0;
     $image = null;
     if (!empty($_FILES['image']['name'])) {

@@ -3,41 +3,67 @@ session_start();
 include 'includes/db_connection.php';
 
 $error = '';
-
+function sanitizeInput($data,$type) {
+    switch ($type) {
+        case 'email':
+            $data = filter_var($data, FILTER_SANITIZE_EMAIL);
+            break;
+        case 'string':
+            $data = filter_var($data, FILTER_SANITIZE_STRING);
+            break;
+        default:
+            $data = htmlspecialchars(stripslashes(trim($data)));
+     break;
+    }
+    return $data;
+}
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'];
+
+    $email    = sanitizeInput($_POST['email'], 'email');
     $password = $_POST['password'];
 
     $query = "SELECT * FROM users WHERE email = ?";
-    $stmt = $conn->prepare($query);
+    $stmt  = $conn->prepare($query);
     $stmt->bind_param("s", $email);
     $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
 
-    if ($user && $password === $user['password']) {
+    $result = $stmt->get_result();
+    $user   = $result->fetch_assoc();
+
+    // Verify hashed password
+    if ($user && password_verify($password, $user['password'])) {
+
         // Store user by role in a multi-login array
         $_SESSION['multi_user_sessions'][$user['role']] = [
-            'user_id' => $user['id'],
+            'user_id'  => $user['id'],
             'username' => $user['username'],
-            'email' => $user['email'],
+            'email'    => $user['email'],
         ];
-        
+
         // Redirect based on role
         if ($user['role'] == 'admin') {
             header("Location: admin/dashboard.php");
-        } elseif ($user['role'] == 'staff') {
+        } 
+        elseif ($user['role'] == 'staff') {
             header("Location: staff/dashboard.php");
-        } elseif ($user['role'] == 'user') {
+        } 
+        elseif ($user['role'] == 'user') {
             header("Location: index.php");
-        } else {
+        } 
+        else {
             header("Location: index.php");
         }
+
         exit();
-    } else {
+
+    } 
+    else {
+
         $error = "Invalid email or password.";
+
     }
 }
+
 ?>
 
 

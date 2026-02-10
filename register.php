@@ -3,12 +3,30 @@ include 'includes/db_connection.php';
 
 $message = "";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $role = 'user'; // Default role for users
+function sanitizeInput($data,$type) {
+    switch ($type) {
+        case 'email':
+            $data = filter_var($data, FILTER_SANITIZE_EMAIL);
+            break;
+        case 'string':
+            $data = filter_var($data, FILTER_SANITIZE_STRING);
+            break;
+        default:
+            $data = htmlspecialchars(stripslashes(trim($data)));
+     break;
+    }
+    return $data;
+}
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $username = sanitizeInput($_POST['username'], 'string');
+    $email    = sanitizeInput($_POST['email'], 'email');
+    $password = $_POST['password'];
+    $role     = 'user'; // Default role
+
+    // Hash password (SECURE)
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     // Check if email already exists
     $checkStmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
@@ -17,20 +35,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $checkResult = $checkStmt->get_result();
 
     if ($checkResult->num_rows > 0) {
+
         $message = "Error: Email address already exists.";
+
     } else {
-        // Insert the new user
-        $stmt = $conn->prepare("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $username, $email, $password, $role);
+
+        // Insert new user
+        $stmt = $conn->prepare(
+            "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)"
+        );
+
+        $stmt->bind_param("ssss", $username, $email, $hashedPassword, $role);
 
         if ($stmt->execute()) {
+
             header("Location: index.php");
             exit();
+
         } else {
+
             $message = "Error: " . $stmt->error;
+
         }
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
