@@ -1,0 +1,57 @@
+html, body{
+    margin: 0px;
+    padding: 0px;
+}
+h1,h2,h3,h4,h5, p{
+    font-family: Arial,sans-serif;
+}
+:root{
+    --flex:flex;
+    --bgdark:#000;
+    --row: row;
+    --rowrev: row-reverse;
+    --column: column;
+    --columnrev: column-reverse;
+    --between: space-between;
+    --center:center;
+    --start:flex-start;
+    --end:flex-end;
+    --orange:rgb(255, 102, 0);
+    --vh: 100vh;
+    --whitecolor: #fff;
+}
+.outer_content{
+    width: 100%;
+    background: var(--orange);
+    height: var(--vh);
+    display: var(--flex);
+    align-items: var(--center);
+
+}
+
+.outer_content .inner_content{
+    width: 100%;
+    display: var(--flex);
+    justify-content: var(--between) !important;
+    align-items: var(--center);
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.outer_content .inner_content h2{
+    color: var(--whitecolor);
+    font-size: 3rem;
+    font-weight: 900;
+}
+
+.outer_content .inner_content p{
+    color: var(--whitecolor);
+    text-align: justify;
+}
+
+.outer_content .inner_content a{
+    background-color: var(--whitecolor);
+    padding: 20px;
+    position: relative;
+    top: 20px;
+}

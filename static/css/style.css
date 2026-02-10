@@ -1,0 +1,102 @@
+/* Reset some browser default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+}
+
+/* Outer container fills viewport */
+.outer_content {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Inner flex container */
+.inner_content {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+    max-width: 1000px;
+    width: 100%;
+}
+
+/* Left (text) content */
+.left_content {
+    flex: 1 1 400px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #ff6f00;
+    color: #fff;
+}
+
+.left_content h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.left_content p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.left_content a {
+    background-color: #fff;
+    color: #ff6f00;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background 0.3s ease;
+    width: fit-content;
+}
+
+.left_content a:hover {
+    background-color: #ffe0b2;
+}
+
+/* Right (image) content */
+.right_content {
+    flex: 1 1 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+}
+
+.right_content img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    max-height: 400px;
+}
+
+/* Responsive behavior */
+@media (max-width: 768px) {
+    .inner_content {
+        flex-direction: column-reverse;
+    }
+
+    .right_content img {
+        max-height: 300px;
+    }
+
+    .left_content {
+        text-align: center;
+        align-items: center;
+    }
+}
